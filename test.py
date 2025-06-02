@@ -17,7 +17,7 @@ _original_posix_path = None
 # --- สิ้นสุดส่วนโค้ด Patch ---
 
 # --- !!! สำคัญมาก: แก้ไข Path ไปยังไฟล์โมเดล .pkl ของคุณที่นี่ !!! ---
-MODEL_PATH = Path("E:/MyFastAI_Project_E/convnextv2_thev1_best_for_good.pkl") # <--- ***** แก้ไข Path นี้ *****
+MODEL_PATH = Path("convnextv2_thev1_best_for_good.pkl") # <--- ***** แก้ไข Path นี้ *****
 # หรือ MODEL_PATH = Path("Thisisthelastone.pkl") # ถ้าไฟล์อยู่ในโฟลเดอร์เดียวกับ app_streamlit.py
 # --------------------------------------------------------------------
 
