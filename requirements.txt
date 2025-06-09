@@ -6,3 +6,4 @@ google-generativeai==0.8.5
 fasttransform==0.0.2
 pillow==11.2.1
 pandas==2.3.0
+cloudpickle==3.1.1
