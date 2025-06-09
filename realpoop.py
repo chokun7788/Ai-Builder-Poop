@@ -78,21 +78,26 @@ def download_and_open_image(image_url):
 def process_and_start_chat(image_source, key_suffix):
     if st.button("ทำนาย และ อธิบาย", key=key_suffix):
         with st.spinner('กำลังอธิบาย...'):
-            # ดาวน์โหลดและเปิดภาพจาก URL
-            pil_image = download_and_open_image(image_source)
-            
-            if pil_image is not None:
+            try:
+                pil_image = PILImage.create(image_source)  # ใช้ PILImage.create จาก fastai
                 pred_class, pred_idx, probs = learn.predict(pil_image)
+                
                 st.markdown(f"#### ผลลัพธ์: **{pred_class}**")
                 st.markdown(f"##### ความน่าจะเป็น: **{probs[pred_idx]:.1%}**")
                 df_probs = pd.DataFrame({'Class': learn.dls.vocab, 'Probability': probs.numpy() * 100})
                 fig = px.pie(df_probs, values='Probability', names='Class', color_discrete_sequence=px.colors.qualitative.Set3)
+                fig.update_traces(textposition='inside', textinfo='percent+label')
                 st.plotly_chart(fig, use_container_width=True)
+                st.markdown("---")
 
                 # เริ่มต้นคำอธิบาย AI
                 initial_explanation = get_initial_explanation(pred_class)
                 st.session_state.chat = genai.GenerativeModel('gemini-1.5-flash-latest').start_chat(history=[])
                 st.session_state.messages = [{"role": "model", "parts": [initial_explanation]}]
+            
+            except Exception as e:
+                st.error(f"Error during prediction: {e}")
+
 
 sec = st.selectbox("เลือกหมวดหมู่", ["อัปโหลดรูปเพื่อใช้งานจริง", "ทดลองใช้(สำหรับไม่มีรูป)"])
 
