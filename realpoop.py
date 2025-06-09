@@ -6,9 +6,7 @@ import plotly.express as px
 from pathlib import Path
 import sys
 import pathlib
-import google.generativeai as genai
-import requests
-from io import BytesIO
+import google.generativeai as genai 
 
 # รองรับทั้ง Windows และ Linux (ก่อน deploy จริง)
 _original_posix_path = None
@@ -68,36 +66,21 @@ st.warning("⚠️ **ข้อควรระวัง:** ผลลัพธ์�
 def process_and_start_chat(image_source, key_suffix):
     if st.button("ทำนาย และ อธิบาย", key=key_suffix):
         with st.spinner('กำลังอธิบาย...'):
-            try:
-                # ตรวจสอบถ้า image_source เป็น URL
-                if isinstance(image_source, str) and image_source.startswith('http'):
-                    # โหลดภาพจาก URL โดยใช้ requests
-                    response = requests.get(image_source)
-                    img = Image.open(BytesIO(response.content))
-                else:
-                    # หากเป็นไฟล์ที่อัปโหลดจาก Streamlit file uploader
-                    img = Image.open(image_source)
-
-                # แปลงเป็น PILImage ก่อนที่จะทำการ predict
-                pil_image = PILImage.create(img)
-                
-                # ทำการทำนายผลจากโมเดล
-                pred_class, pred_idx, probs = learn.predict(pil_image)
-                st.markdown(f"#### ผลลัพธ์: **{pred_class}**")
-                st.markdown(f"##### ความน่าจะเป็น: **{probs[pred_idx]:.1%}**")
-                df_probs = pd.DataFrame({'Class': learn.dls.vocab, 'Probability': probs.numpy() * 100})
-                fig = px.pie(df_probs, values='Probability', names='Class', color_discrete_sequence=px.colors.qualitative.Set3)
-                fig.update_traces(textposition='inside', textinfo='percent+label')
-                st.plotly_chart(fig, use_container_width=True)
-                st.markdown("---")
-                
-                # เริ่มต้นคำอธิบายจาก AI
-                initial_explanation = get_initial_explanation(pred_class)
-                st.session_state.chat = genai.GenerativeModel('gemini-1.5-flash-latest').start_chat(history=[])
-                st.session_state.messages = [{"role": "model", "parts": [initial_explanation]}]
+            pil_image = PILImage.create(image_source)
+            pred_class, pred_idx, probs = learn.predict(pil_image)
+            st.markdown(f"#### ผลลัพธ์: **{pred_class}**")
+            st.markdown(f"##### ความน่าจะเป็น: **{probs[pred_idx]:.1%}**")
+            df_probs = pd.DataFrame({'Class': learn.dls.vocab, 'Probability': probs.numpy() * 100})
+            fig = px.pie(df_probs, values='Probability', names='Class', color_discrete_sequence=px.colors.qualitative.Set3)
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+            st.plotly_chart(fig, use_container_width=True)
+            st.markdown("---")
             
-            except Exception as e:
-                st.error(f"Error during prediction: {e}")
+            with st.spinner('AI กำลังเตรียมคำอธิบายเริ่มต้น...'):
+                initial_explanation = get_initial_explanation(pred_class)
+                model = genai.GenerativeModel('gemini-1.5-flash-latest')
+                st.session_state.chat = model.start_chat(history=[])
+                st.session_state.messages = [{"role": "model", "parts": [initial_explanation]}]
 
 sec = st.selectbox("เลือกหมวดหมู่", ["อัปโหลดรูปเพื่อใช้งานจริง", "ทดลองใช้(สำหรับไม่มีรูป)"])
 
