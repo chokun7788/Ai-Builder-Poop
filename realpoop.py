@@ -1,3 +1,5 @@
+import requests #เพิ่ม
+from io import BytesIO #เพิ่ม
 import streamlit as st
 from fastai.vision.all import *
 from PIL import Image
@@ -8,20 +10,18 @@ import sys
 import pathlib
 import google.generativeai as genai 
 
-# รองรับทั้ง Windows และ Linux (ก่อน deploy จริง)
+#เปลี่ยนให้ Windows และ Linux (ก่อน deploy จริง)
 _original_posix_path = None
 if sys.platform == "win32":
     if hasattr(pathlib, 'PosixPath') and not isinstance(pathlib.PosixPath, pathlib.WindowsPath):
         _original_posix_path = pathlib.PosixPath
         pathlib.PosixPath = pathlib.WindowsPath
 
-# กำหนด API Key สำหรับ Google Gemini
 api_key_configured = False
 GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
 genai.configure(api_key=GOOGLE_API_KEY)
 api_key_configured = True
 
-# ฟังก์ชันสร้างคำอธิบายเริ่มต้น
 def get_initial_explanation(stool_class):
     class_map = {
         "Blood": "มีเลือดปน (Blood)", "Diarrhea": "ท้องร่วง/ท้องเสีย (Diarrhea)",
@@ -44,7 +44,7 @@ def get_initial_explanation(stool_class):
     except Exception as e:
         return f"ขออภัย, เกิดข้อผิดพลาดในการเรียก AI เพื่อขอคำอธิบาย: {e}"
 
-# โหลดโมเดล
+#Model
 MODEL_FILENAME = Path("convnextv2_thev1_best_for_good.pkl")
 @st.cache_resource
 def load_model(local_path):
@@ -57,40 +57,40 @@ def load_model(local_path):
 
 learn = load_model(MODEL_FILENAME)
 
-# --- Header และข้อความเตือน ---
+#Hedad
 st.title("💩 :rainbow[Poop Classification & AI Chat]")
 st.subheader("แยกประเภทอุจจาระ และพูดคุยถาม-ตอบกับ AI")
 st.warning("⚠️ **ข้อควรระวัง:** ผลลัพธ์จาก AI นี้เป็นเพียงข้อมูลเบื้องต้นเพื่อการศึกษาเท่านั้น **ไม่สามารถใช้แทนการวินิจฉัยจากแพทย์ได้** หากมีอาการผิดปกติหรือกังวลใจ กรุณาปรึกษาแพทย์ผู้เชี่ยวชาญ")
 
-# ฟังก์ชันที่ทำการทำนายและเริ่มต้นแชท
+#predict+llm(gemini)
 def process_and_start_chat(image_source, key_suffix):
     if st.button("ทำนาย และ อธิบาย", key=key_suffix):
         with st.spinner('กำลังอธิบาย...'):
-            pil_image = PILImage.create(image_source)
-            pred_class, pred_idx, probs = learn.predict(pil_image)
-            st.markdown(f"#### ผลลัพธ์: **{pred_class}**")
-            st.markdown(f"##### ความน่าจะเป็น: **{probs[pred_idx]:.1%}**")
-            df_probs = pd.DataFrame({'Class': learn.dls.vocab, 'Probability': probs.numpy() * 100})
-            fig = px.pie(df_probs, values='Probability', names='Class', color_discrete_sequence=px.colors.qualitative.Set3)
-            fig.update_traces(textposition='inside', textinfo='percent+label')
-            st.plotly_chart(fig, use_container_width=True)
-            st.markdown("---")
-            
-            with st.spinner('AI กำลังเตรียมคำอธิบายเริ่มต้น...'):
+            pil_image = download_and_open_image(image_source)
+
+            if pil_image is not None:
+                pred_class, pred_idx, probs = learn.predict(pil_image)
+                st.markdown(f"#### ผลลัพธ์: **{pred_class}**")
+                st.markdown(f"##### ความน่าจะเป็น: **{probs[pred_idx]:.1%}**")
+                df_probs = pd.DataFrame({'Class': learn.dls.vocab, 'Probability': probs.numpy() * 100})
+                fig = px.pie(df_probs, values='Probability', names='Class', color_discrete_sequence=px.colors.qualitative.Set3)
+                st.plotly_chart(fig, use_container_width=True)
+
+                #Chat
                 initial_explanation = get_initial_explanation(pred_class)
-                model = genai.GenerativeModel('gemini-1.5-flash-latest')
-                st.session_state.chat = model.start_chat(history=[])
+                st.session_state.chat = genai.GenerativeModel('gemini-1.5-flash-latest').start_chat(history=[])
                 st.session_state.messages = [{"role": "model", "parts": [initial_explanation]}]
 
 sec = st.selectbox("เลือกหมวดหมู่", ["อัปโหลดรูปเพื่อใช้งานจริง", "ทดลองใช้(สำหรับไม่มีรูป)"])
 
-# ฟังก์ชันอัปโหลดรูป
+#sec1 upload
 if sec == "อัปโหลดรูปเพื่อใช้งานจริง":
     upload_file = st.file_uploader("อัปโหลดภาพของคุณ", type=["jpg", "jpeg", "png"])
     if upload_file:
         st.image(upload_file, caption="ภาพที่อัปโหลด", use_container_width=True)
         process_and_start_chat(upload_file, key_suffix="upload")
-# ฟังก์ชันทดสอบแบบไม่มีรูป
+        
+#sec2 example
 elif sec == "ทดลองใช้(สำหรับไม่มีรูป)":
     class_poo = st.selectbox("เลือกคลาสที่ต้องการทดสอบ", ["Blood", "Diarrhea", "Green", "Mucus", "Normal", "Yellow"])
     ex_img = {
@@ -131,7 +131,7 @@ elif sec == "ทดลองใช้(สำหรับไม่มีรูป
     img_index = int(image_choice.split()[1]) - 1
     img_path = select[img_index]
     st.image(img_path, caption=f"ภาพที่เลือก", use_container_width=True)
-    process_and_start_chat(img_path, key_suffix="test")
+    process_and_start_chat(img_path, key_suffix="test"
     
 # แชทเจนคำ
 if "messages" in st.session_state and api_key_configured:
