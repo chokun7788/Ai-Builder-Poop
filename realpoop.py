@@ -37,23 +37,18 @@ def get_initial_explanation(stool_class):
     3.  **คำแนะนำเบื้องต้นและการดูแลตัวเอง:**
     **คำเตือนสำคัญ:** โปรดเน้นย้ำในตอนท้ายว่าข้อมูลนี้เป็นเพียงคำแนะนำเบื้องต้นเท่านั้น ไม่สามารถใช้แทนการวินิจฉัยจากแพทย์ผู้เชี่ยวชาญได้ และจบด้วยการบอกว่า "หากมีคำถามเพิ่มเติมเกี่ยวกับผลลัพธ์นี้ สามารถพิมพ์ถามได้เลยครับ"
     """
-    try:
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
-        response = model.generate_content(prompt)
-        return response.text
-    except Exception as e:
-        return f"ขออภัย, เกิดข้อผิดพลาดในการเรียก AI เพื่อขอคำอธิบาย: {e}"
+    
+    model = genai.GenerativeModel('gemini-1.5-flash-latest')
+    response = model.generate_content(prompt)
+    return response.text
+    
 
 
 MODEL_FILENAME = Path("convnextv2_thev1_best_for_good.pkl")
 @st.cache_resource
 def load_model(local_path):
-    try:
-        learn = load_learner(local_path)
-        return learn
-    except Exception as e:
-        st.error(f"Error loading model: {e}")
-        return None
+    learn = load_learner(local_path)
+    return learn
 
 learn = load_model(MODEL_FILENAME)
 
