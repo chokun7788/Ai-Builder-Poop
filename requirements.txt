@@ -3,6 +3,6 @@ fastai==2.7.19
 torch==2.6.0
 plotly==6.1.2
 google-generativeai==0.8.5
+fasttransform==0.0.2
 pillow==11.2.1
 pandas==2.3.0
-fasttransform==0.0.2
