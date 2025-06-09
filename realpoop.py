@@ -94,23 +94,24 @@ if sec == "อัปโหลดรูปเพื่อใช้งานจร
 elif sec == "ทดลองใช้(สำหรับไม่มีรูป)":
     class_poo = st.selectbox("เลือกคลาสที่ต้องการทดสอบ", ["Blood", "Diarrhea", "Green", "Mucus", "Normal", "Yellow"])
     ex_img = {
-        "Blood": [r"E:\MyFastAI_Project_E\Image\Blood\1.png",
-                  r"E:\MyFastAI_Project_E\Image\Blood\2.jpg", 
-                  r"E:\MyFastAI_Project_E\Image\Diarrhea\122879523_10222902185640115_5437019702589621427_n.jpg"],
-        "Diarrhea": [r"E:\MyFastAI_Project_E\Image\Diarrhea\68621499_10158897636364968_929960603991146496_n.jpg",
-                     r"E:\MyFastAI_Project_E\Image\Diarrhea\118258565_2797050553861531_5149781090231407705_n.jpg",
-                     r"E:\MyFastAI_Project_E\Image\Diarrhea\362242137_646001919459_4084599573521026560_n.jpg"],
-        "Green": [r"E:\MyFastAI_Project_E\Image\Green\470220113_1111404843690107_5400214401912539739_n.jpg",
-                  r"E:\MyFastAI_Project_E\Image\Green\470210610_1614069995660748_7907742087399683339_n.jpg",
-                  r"E:\MyFastAI_Project_E\Image\Green\363839965_10167704066005534_8500730712227200736_n.jpg"],
-        "Mucus": [r"E:\MyFastAI_Project_E\Image\Mucus\does-this-look-like-it-could-be-worms-or-maybe-mucus-in-my-v0-6fvtr2ywdv4d1.png",
-                  r"E:\MyFastAI_Project_E\Image\Mucus\mucus-in-stool-the-first-one-i-thought-was-a-parasite-but-v0-ocmq6pflaxib1.png",
-                  r"E:\MyFastAI_Project_E\Image\Mucus\my-stormatch-intestine-make-noises-every-minute-what-should-v0-ortl442yi0ue1.png"],
-        "Normal": [r"E:\MyFastAI_Project_E\Image\Normal\54.png",
-                   r"E:\MyFastAI_Project_E\Image\Normal\52.png",
-                   r"E:\MyFastAI_Project_E\Image\Normal\53.png"],
-        "Yellow": [r"E:\MyFastAI_Project_E\Image\Yellow\470467721_122113376150620788_7483223442733841889_n.jpg", 
-                   r"E:\MyFastAI_Project_E\Image\Yellow\480450326_1125657082688389_5418859568059391331_n.jpg", r"E:\MyFastAI_Project_E\Image\Yellow\481999682_1136825754904855_5806230666139878824_n.jpg"]
+        "Blood": [r"Image\Blood\1.png",
+                  r"Image\Blood\2.jpg", 
+                  r"Image\Diarrhea\122879523_10222902185640115_5437019702589621427_n.jpg"],
+        "Diarrhea": [r"Image\Diarrhea\68621499_10158897636364968_929960603991146496_n.jpg",
+                     r"Image\Diarrhea\118258565_2797050553861531_5149781090231407705_n.jpg",
+                     r"Image\Diarrhea\362242137_646001919459_4084599573521026560_n.jpg"],
+        "Green": [r"Image\Green\470220113_1111404843690107_5400214401912539739_n.jpg",
+                  r"Image\Green\470210610_1614069995660748_7907742087399683339_n.jpg",
+                  r"Image\Green\363839965_10167704066005534_8500730712227200736_n.jpg"],
+        "Mucus": [r"Image\Mucus\does-this-look-like-it-could-be-worms-or-maybe-mucus-in-my-v0-6fvtr2ywdv4d1.png",
+                  r"Image\Mucus\mucus-in-stool-the-first-one-i-thought-was-a-parasite-but-v0-ocmq6pflaxib1.png",
+                  r"Image\Mucus\my-stormatch-intestine-make-noises-every-minute-what-should-v0-ortl442yi0ue1.png"],
+        "Normal": [r"Image\Normal\54.png",
+                   r"Image\Normal\52.png",
+                   r"Image\Normal\53.png"],
+        "Yellow": [r"Image\Yellow\470467721_122113376150620788_7483223442733841889_n.jpg", 
+                   r"Image\Yellow\480450326_1125657082688389_5418859568059391331_n.jpg",
+                   r"Image\Yellow\481999682_1136825754904855_5806230666139878824_n.jpg"]
     }
     select = ex_img[class_poo]
     image_choice = st.radio("เลือกภาพที่ต้องการทำนาย", [f"Image {i+1}" for i in range(len(select))])
