@@ -100,29 +100,29 @@ elif sec == "ทดลองใช้(สำหรับไม่มีรูป
         "Image/Blood/122879523_10222902185640115_5437019702589621427_n.jpg"
     ],
     "Diarrhea": [
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Diarrhea/68621499_10158897636364968_929960603991146496_n.jpg",
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Diarrhea/118258565_2797050553861531_5149781090231407705_n.jpg",
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Diarrhea/362242137_646001919459_4084599573521026560_n.jpg"
+        "Image/Diarrhea/68621499_10158897636364968_929960603991146496_n.jpg",
+        "Image/Diarrhea/118258565_2797050553861531_5149781090231407705_n.jpg",
+        "Image/Diarrhea/362242137_646001919459_4084599573521026560_n.jpg"
     ],
     "Green": [
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Green/470220113_1111404843690107_5400214401912539739_n.jpg",
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Green/470210610_1614069995660748_7907742087399683339_n.jpg",
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Green/363839965_10167704066005534_8500730712227200736_n.jpg"
+        "Image/Green/470220113_1111404843690107_5400214401912539739_n.jpg",
+        "Image/Green/470210610_1614069995660748_7907742087399683339_n.jpg",
+        "Image/Green/363839965_10167704066005534_8500730712227200736_n.jpg"
     ],
     "Mucus": [
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Mucus/does-this-look-like-it-could-be-worms-or-maybe-mucus-in-my-v0-6fvtr2ywdv4d1.png",
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Mucus/mucus-in-stool-the-first-one-i-thought-was-a-parasite-but-v0-ocmq6pflaxib1.png",
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Mucus/my-stormatch-intestine-make-noises-every-minute-what-should-v0-ortl442yi0ue1.png"
+        "Image/Mucus/does-this-look-like-it-could-be-worms-or-maybe-mucus-in-my-v0-6fvtr2ywdv4d1.png",
+        "Image/Mucus/mucus-in-stool-the-first-one-i-thought-was-a-parasite-but-v0-ocmq6pflaxib1.png",
+        "Image/Mucus/my-stormatch-intestine-make-noises-every-minute-what-should-v0-ortl442yi0ue1.png"
     ],
     "Normal": [
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Normal/54.png",
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Normal/52.png",
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Normal/53.png"
+        "Image/Normal/54.png",
+        "Image/Normal/52.png",
+        "Image/Normal/53.png"
     ],
     "Yellow": [
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Yellow/470467721_122113376150620788_7483223442733841889_n.jpg", 
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Yellow/480450326_1125657082688389_5418859568059391331_n.jpg", 
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Yellow/481999682_1136825754904855_5806230666139878824_n.jpg"
+        "Image/Yellow/470467721_122113376150620788_7483223442733841889_n.jpg", 
+        "Image/Yellow/480450326_1125657082688389_5418859568059391331_n.jpg", 
+        "Image/Yellow/481999682_1136825754904855_5806230666139878824_n.jpg"
     ]
 }
 
