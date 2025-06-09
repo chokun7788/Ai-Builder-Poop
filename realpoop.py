@@ -1,5 +1,3 @@
-import requests
-from io import BytesIO
 import streamlit as st
 from fastai.vision.all import *
 from PIL import Image
@@ -8,7 +6,9 @@ import plotly.express as px
 from pathlib import Path
 import sys
 import pathlib
-import google.generativeai as genai 
+import google.generativeai as genai
+import requests
+from io import BytesIO
 
 # รองรับทั้ง Windows และ Linux (ก่อน deploy จริง)
 _original_posix_path = None
@@ -64,16 +64,6 @@ st.title("💩 :rainbow[Poop Classification & AI Chat]")
 st.subheader("แยกประเภทอุจจาระ และพูดคุยถาม-ตอบกับ AI")
 st.warning("⚠️ **ข้อควรระวัง:** ผลลัพธ์จาก AI นี้เป็นเพียงข้อมูลเบื้องต้นเพื่อการศึกษาเท่านั้น **ไม่สามารถใช้แทนการวินิจฉัยจากแพทย์ได้** หากมีอาการผิดปกติหรือกังวลใจ กรุณาปรึกษาแพทย์ผู้เชี่ยวชาญ")
 
-# ฟังก์ชันดาวน์โหลดภาพจาก URL และแปลงเป็น PIL Image
-def download_and_open_image(image_url):
-    try:
-        response = requests.get(image_url)
-        img = Image.open(BytesIO(response.content))  # ใช้ BytesIO เพื่อแปลงข้อมูลจาก bytes เป็นภาพ
-        return img
-    except Exception as e:
-        st.error(f"Error downloading or opening the image: {e}")
-        return None
-
 # ฟังก์ชันที่ทำการทำนายและเริ่มต้นแชท
 def process_and_start_chat(image_source, key_suffix):
     if st.button("ทำนาย และ อธิบาย", key=key_suffix):
@@ -81,13 +71,17 @@ def process_and_start_chat(image_source, key_suffix):
             try:
                 # ตรวจสอบถ้า image_source เป็น URL
                 if isinstance(image_source, str) and image_source.startswith('http'):
-                    # ดาวน์โหลดไฟล์จาก URL
-                    pil_image = PILImage.create(requests.get(image_source, stream=True).raw)
+                    # โหลดภาพจาก URL โดยใช้ requests
+                    response = requests.get(image_source)
+                    img = Image.open(BytesIO(response.content))
                 else:
-                    # หากเป็นไฟล์ในเครื่องหรือ Streamlit file uploader
-                    pil_image = PILImage.create(image_source)
+                    # หากเป็นไฟล์ที่อัปโหลดจาก Streamlit file uploader
+                    img = Image.open(image_source)
+
+                # แปลงเป็น PILImage ก่อนที่จะทำการ predict
+                pil_image = PILImage.create(img)
                 
-                # เรียกใช้ predict
+                # ทำการทำนายผลจากโมเดล
                 pred_class, pred_idx, probs = learn.predict(pil_image)
                 st.markdown(f"#### ผลลัพธ์: **{pred_class}**")
                 st.markdown(f"##### ความน่าจะเป็น: **{probs[pred_idx]:.1%}**")
@@ -104,8 +98,6 @@ def process_and_start_chat(image_source, key_suffix):
             
             except Exception as e:
                 st.error(f"Error during prediction: {e}")
-
-
 
 sec = st.selectbox("เลือกหมวดหมู่", ["อัปโหลดรูปเพื่อใช้งานจริง", "ทดลองใช้(สำหรับไม่มีรูป)"])
 
@@ -170,9 +162,11 @@ if "messages" in st.session_state and api_key_configured:
         with st.chat_message("user"):
             st.markdown(prompt)
         with st.chat_message("model"):
-            response = st.session_state.chat.send_message(prompt)
-            st.markdown(response.text)
-        st.session_state.messages.append({"role": "model", "parts": [response.text]})
+            with st.spinner("AI กำลังคิด..."):
+                response = st.session_state.chat.send_message(prompt)
+                response_text = response.text
+                st.markdown(response_text)
+        st.session_state.messages.append({"role": "model", "parts": [response_text]})
 
 # --- ส่วนท้าย ---
 st.subheader("", divider=True)
