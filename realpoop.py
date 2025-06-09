@@ -9,11 +9,11 @@ import pathlib
 import google.generativeai as genai 
 
 #ให้สามารถมใช้ได้กับ Windows และ Linux (ก่อน deploy จริง)
-_original_posix_path = None
-if sys.platform == "win32":
-    if hasattr(pathlib, 'PosixPath') and not isinstance(pathlib.PosixPath, pathlib.WindowsPath):
-        _original_posix_path = pathlib.PosixPath
-        pathlib.PosixPath = pathlib.WindowsPath
+# _original_posix_path = None
+# if sys.platform == "win32":
+#     if hasattr(pathlib, 'PosixPath') and not isinstance(pathlib.PosixPath, pathlib.WindowsPath):
+#         _original_posix_path = pathlib.PosixPath
+#         pathlib.PosixPath = pathlib.WindowsPath
 
 
 #llm gemini
