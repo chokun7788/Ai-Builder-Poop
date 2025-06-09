@@ -68,7 +68,8 @@ st.warning("⚠️ **ข้อควรระวัง:** ผลลัพธ์�
 def download_and_open_image(image_url):
     try:
         response = requests.get(image_url)
-        return Image.open(BytesIO(response.content))
+        img = Image.open(BytesIO(response.content))  # ใช้ BytesIO เพื่อแปลงข้อมูลจาก bytes เป็นภาพ
+        return img
     except Exception as e:
         st.error(f"Error downloading or opening the image: {e}")
         return None
