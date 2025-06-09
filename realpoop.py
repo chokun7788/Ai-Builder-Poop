@@ -95,9 +95,9 @@ elif sec == "ทดลองใช้(สำหรับไม่มีรูป
     class_poo = st.selectbox("เลือกคลาสที่ต้องการทดสอบ", ["Blood", "Diarrhea", "Green", "Mucus", "Normal", "Yellow"])
     ex_img = {
     "Blood": [
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Blood/1.png",
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Blood/2.jpg", 
-        "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Blood/122879523_10222902185640115_5437019702589621427_n.jpg"
+        "Image/Blood/1.png",
+        "Image/Blood/2.jpg", 
+        "Image/Blood/122879523_10222902185640115_5437019702589621427_n.jpg"
     ],
     "Diarrhea": [
         "https://raw.githubusercontent.com/chokun7788/Ai-Builder-Poop/main/Image/Diarrhea/68621499_10158897636364968_929960603991146496_n.jpg",
