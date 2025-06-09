@@ -8,20 +8,20 @@ import sys
 import pathlib
 import google.generativeai as genai 
 
-# รองรับทั้ง Windows และ Linux (ก่อน deploy จริง)
+#ใชกับWindows/Linux (ก่อน deploy จริง)
 _original_posix_path = None
 if sys.platform == "win32":
     if hasattr(pathlib, 'PosixPath') and not isinstance(pathlib.PosixPath, pathlib.WindowsPath):
         _original_posix_path = pathlib.PosixPath
         pathlib.PosixPath = pathlib.WindowsPath
 
-# กำหนด API Key สำหรับ Google Gemini
+#Gemini (Chat)
 api_key_configured = False
 GOOGLE_API_KEY = st.secrets["GOOGLE_API_KEY"]
 genai.configure(api_key=GOOGLE_API_KEY)
 api_key_configured = True
 
-# ฟังก์ชันสร้างคำอธิบายเริ่มต้น
+#Class
 def get_initial_explanation(stool_class):
     class_map = {
         "Blood": "มีเลือดปน (Blood)", "Diarrhea": "ท้องร่วง/ท้องเสีย (Diarrhea)",
@@ -44,7 +44,7 @@ def get_initial_explanation(stool_class):
     except Exception as e:
         return f"ขออภัย, เกิดข้อผิดพลาดในการเรียก AI เพื่อขอคำอธิบาย: {e}"
 
-# โหลดโมเดล
+
 MODEL_FILENAME = Path("convnextv2_thev1_best_for_good.pkl")
 @st.cache_resource
 def load_model(local_path):
@@ -57,12 +57,12 @@ def load_model(local_path):
 
 learn = load_model(MODEL_FILENAME)
 
-# --- Header และข้อความเตือน ---
+#Font
 st.title("💩 :rainbow[Poop Classification & AI Chat]")
 st.subheader("แยกประเภทอุจจาระ และพูดคุยถาม-ตอบกับ AI")
 st.warning("⚠️ **ข้อควรระวัง:** ผลลัพธ์จาก AI นี้เป็นเพียงข้อมูลเบื้องต้นเพื่อการศึกษาเท่านั้น **ไม่สามารถใช้แทนการวินิจฉัยจากแพทย์ได้** หากมีอาการผิดปกติหรือกังวลใจ กรุณาปรึกษาแพทย์ผู้เชี่ยวชาญ")
 
-# ฟังก์ชันที่ทำการทำนายและเริ่มต้นแชท
+#Predict
 def process_and_start_chat(image_source, key_suffix):
     if st.button("ทำนาย และ อธิบาย", key=key_suffix):
         with st.spinner('กำลังอธิบาย...'):
@@ -82,16 +82,17 @@ def process_and_start_chat(image_source, key_suffix):
                 st.session_state.chat = model.start_chat(history=[])
                 st.session_state.messages = [{"role": "model", "parts": [initial_explanation]}]
 
-sec = st.selectbox("เลือกหมวดหมู่", ["อัปโหลดรูปเพื่อใช้งานจริง", "ทดลองใช้(สำหรับไม่มีรูป)"])
+sec = st.selectbox("เลือกหมวดหมู่", ["อัปโหลดรูปเพื่อใช้งานจริง", "ทดลองใช้(ตัวอย่างรูป)"])
 
-# ฟังก์ชันอัปโหลดรูป
+#sec1
 if sec == "อัปโหลดรูปเพื่อใช้งานจริง":
     upload_file = st.file_uploader("อัปโหลดภาพของคุณ", type=["jpg", "jpeg", "png"])
     if upload_file:
         st.image(upload_file, caption="ภาพที่อัปโหลด", use_container_width=True)
         process_and_start_chat(upload_file, key_suffix="upload")
-# ฟังก์ชันทดสอบแบบไม่มีรูป
-elif sec == "ทดลองใช้(สำหรับไม่มีรูป)":
+
+#sec2
+elif sec == "ทดลองใช้(ตัวอย่างรูป)":
     class_poo = st.selectbox("เลือกคลาสที่ต้องการทดสอบ", ["Blood", "Diarrhea", "Green", "Mucus", "Normal", "Yellow"])
     ex_img = {
     "Blood": [
