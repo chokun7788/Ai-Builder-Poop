@@ -1,12 +1,11 @@
 import streamlit as st
 from fastai.vision.all import *
+import timm
+from timm.models import *
 from PIL import Image
 import pandas as pd
 import plotly.express as px
-from pathlib import Path
-import sys
-import pathlib
-import google.generativeai as genai 
+import google.generativeai as genai
 
 #ใชกับWindows/Linux (ก่อน deploy จริง)
 _original_posix_path = None
@@ -151,3 +150,4 @@ if "messages" in st.session_state and api_key_configured:
 st.subheader("", divider=True)
 st.caption(":blue[Ai Builder Season 5]")
 st.caption(":red[Passawut Chutiparcharkij | IG : passawut_727]")
+
