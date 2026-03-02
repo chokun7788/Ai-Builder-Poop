@@ -73,7 +73,7 @@ def process_and_start_chat(image_source, key_suffix):
             
             with st.spinner('AI กำลังเตรียมคำอธิบายเริ่มต้น...'):
                 initial_explanation = get_initial_explanation(pred_class)
-                model = genai.GenerativeModel('gemini-1.5-flash-latest')
+                model = genai.GenerativeModel('models/gemini-1.5-flash')
                 st.session_state.chat = model.start_chat(history=[])
                 st.session_state.messages = [{"role": "model", "parts": [initial_explanation]}]
 
@@ -151,4 +151,5 @@ if "messages" in st.session_state and api_key_configured:
 st.subheader("", divider=True)
 st.caption(":blue[Ai Builder Season 5]")
 st.caption(":red[Passawut Chutiparcharkij | IG : passawut_727]")
+
 
