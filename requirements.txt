@@ -1,7 +1,12 @@
 streamlit==1.46.1
 
+# ===== FastAI Model =====
 fastai==2.7.13
 torch==2.1.2
 torchvision==0.16.2
 timm
 pillow
+
+# ===== Gemini Chatbot =====
+google-generativeai==0.8.5
+python-dotenv==1.1.1
