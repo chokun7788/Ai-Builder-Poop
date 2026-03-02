@@ -38,7 +38,7 @@ def get_initial_explanation(stool_class):
     **คำเตือนสำคัญ:** โปรดเน้นย้ำในตอนท้ายว่าข้อมูลนี้เป็นเพียงคำแนะนำเบื้องต้นเท่านั้น ไม่สามารถใช้แทนการวินิจฉัยจากแพทย์ผู้เชี่ยวชาญได้ และจบด้วยการบอกว่า "หากมีคำถามเพิ่มเติมเกี่ยวกับผลลัพธ์นี้ สามารถพิมพ์ถามได้เลยครับ"
     """
     
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('models/gemini-1.5-flash')
     response = model.generate_content(prompt)
     return response.text
     
@@ -151,5 +151,6 @@ if "messages" in st.session_state and api_key_configured:
 st.subheader("", divider=True)
 st.caption(":blue[Ai Builder Season 5]")
 st.caption(":red[Passawut Chutiparcharkij | IG : passawut_727]")
+
 
 
