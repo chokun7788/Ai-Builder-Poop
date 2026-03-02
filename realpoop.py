@@ -8,6 +8,15 @@ import sys
 import pathlib
 import google.generativeai as genai 
 
+import google.generativeai as genai
+import streamlit as st
+
+if st.button("Check Models"):
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+    for m in genai.list_models():
+        st.write(m.name)
+
+
 #ใชกับWindows/Linux (ก่อน deploy จริง)
 _original_posix_path = None
 if sys.platform == "win32":
@@ -151,6 +160,7 @@ if "messages" in st.session_state and api_key_configured:
 st.subheader("", divider=True)
 st.caption(":blue[Ai Builder Season 5]")
 st.caption(":red[Passawut Chutiparcharkij | IG : passawut_727]")
+
 
 
 
