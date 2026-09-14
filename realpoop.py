@@ -1,4 +1,5 @@
 import pathlib
+import pathlib
 import sys
 from pathlib import Path
 
@@ -17,6 +18,8 @@ st.set_page_config(page_title="Poop Classification & AI Chat", page_icon="💩")
 # -----------------------------------------------------------------------------
 if "language" not in st.session_state:
     st.session_state.language = "th"
+if "pdpa_consent" not in st.session_state:
+    st.session_state.pdpa_consent = False
 
 
 LANGUAGE = st.session_state.language
@@ -36,6 +39,17 @@ TEXT = {
         "example_mode": "ทดลองใช้ (ตัวอย่างรูป)",
         "upload": "อัปโหลดภาพของคุณ",
         "uploaded_image": "ภาพที่อัปโหลด",
+        "consent_title": "การยินยอมก่อนใช้ภาพ (PDPA)",
+        "consent_alert": "⚠️ ก่อนถ่ายรูปหรืออัปโหลดภาพ กรุณาอ่านรายละเอียดและกดยินยอมก่อนใช้งาน",
+        "consent_detail": "ภาพที่คุณถ่ายหรือเลือกอัปโหลดจะถูกนำมาใช้เพื่อวิเคราะห์ประเภทอุจจาระและสร้างคำอธิบายด้วย AI กรุณาอย่าอัปโหลดภาพที่มีข้อมูลส่วนบุคคลของผู้อื่นโดยไม่ได้รับอนุญาต",
+        "consent_checkbox": "ฉันรับทราบและยินยอมให้ใช้ภาพเพื่อวัตถุประสงค์ดังกล่าว",
+        "consent_accept": "ยินยอมและดำเนินการต่อ",
+        "consent_required": "กรุณาติ๊กยินยอมก่อนดำเนินการต่อ",
+        "input_method": "เลือกวิธีเพิ่มภาพ",
+        "camera": "ถ่ายรูปด้วยกล้อง",
+        "upload_from_device": "เลือกภาพจากเครื่อง",
+        "camera_label": "กดเพื่อเปิดกล้องและถ่ายรูป",
+        "camera_image": "ภาพที่ถ่ายจากกล้อง",
         "class": "เลือกคลาสที่ต้องการทดสอบ",
         "image": "เลือกภาพที่ต้องการทำนาย",
         "selected_image": "ภาพที่เลือก",
@@ -67,6 +81,17 @@ TEXT = {
         "example_mode": "Try an example image",
         "upload": "Upload your image",
         "uploaded_image": "Uploaded image",
+        "consent_title": "Consent before using an image (PDPA)",
+        "consent_alert": "⚠️ Before taking or uploading an image, please read the notice and give your consent.",
+        "consent_detail": "The image you take or upload will be used to classify the stool and generate an AI explanation. Please do not upload an image containing another person’s personal data without permission.",
+        "consent_checkbox": "I acknowledge and consent to the use of this image for the stated purpose.",
+        "consent_accept": "Consent and continue",
+        "consent_required": "Please check the consent box before continuing.",
+        "input_method": "Choose how to add an image",
+        "camera": "Take a photo with camera",
+        "upload_from_device": "Choose an image from device",
+        "camera_label": "Click to open the camera and take a photo",
+        "camera_image": "Photo taken with camera",
         "class": "Choose a class to test",
         "image": "Choose an image to predict",
         "selected_image": "Selected image",
@@ -91,6 +116,28 @@ T = TEXT[LANGUAGE]
 
 def switch_language():
     st.session_state.language = "en" if st.session_state.language == "th" else "th"
+
+
+if hasattr(st, "dialog"):
+    @st.dialog(T["consent_title"])
+    def show_pdpa_consent_dialog():
+        st.warning(T["consent_alert"])
+        st.write(T["consent_detail"])
+        agreed = st.checkbox(T["consent_checkbox"], key="pdpa_checkbox")
+        if st.button(T["consent_accept"], type="primary", use_container_width=True):
+            if agreed:
+                st.session_state.pdpa_consent = True
+                st.rerun()
+            else:
+                st.error(T["consent_required"])
+else:
+    def show_pdpa_consent_dialog():
+        st.warning(T["consent_alert"])
+        st.info(T["consent_detail"])
+        agreed = st.checkbox(T["consent_checkbox"], key="pdpa_checkbox")
+        if agreed and st.button(T["consent_accept"], type="primary", key="pdpa_accept"):
+            st.session_state.pdpa_consent = True
+            st.rerun()
 
 
 # ใช้กับ Windows/Linux (ก่อน deploy จริง)
@@ -188,10 +235,27 @@ sec = st.selectbox(
 
 
 if sec == T["upload_mode"]:
-    upload_file = st.file_uploader(T["upload"], type=["jpg", "jpeg", "png"])
-    if upload_file:
-        st.image(upload_file, caption=T["uploaded_image"], use_container_width=True)
-        process_and_start_chat(upload_file, key_suffix="upload")
+    if not st.session_state.pdpa_consent:
+        show_pdpa_consent_dialog()
+        st.stop()
+
+    input_method = st.radio(
+        T["input_method"],
+        [T["camera"], T["upload_from_device"]],
+        horizontal=True,
+    )
+    image_source = None
+    image_caption = T["uploaded_image"]
+
+    if input_method == T["camera"]:
+        image_source = st.camera_input(T["camera_label"])
+        image_caption = T["camera_image"]
+    else:
+        image_source = st.file_uploader(T["upload"], type=["jpg", "jpeg", "png"])
+
+    if image_source:
+        st.image(image_source, caption=image_caption, use_container_width=True)
+        process_and_start_chat(image_source, key_suffix="personal_image")
 
 elif sec == T["example_mode"]:
     class_poo = st.selectbox(
