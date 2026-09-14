@@ -121,6 +121,9 @@ def switch_language():
 if hasattr(st, "dialog"):
     @st.dialog(T["consent_title"])
     def show_pdpa_consent_dialog():
+        if st.button(T["switch"], key="pdpa_language_switch", use_container_width=True):
+            switch_language()
+            st.rerun()
         st.warning(T["consent_alert"])
         st.write(T["consent_detail"])
         agreed = st.checkbox(T["consent_checkbox"], key="pdpa_checkbox")
@@ -132,6 +135,9 @@ if hasattr(st, "dialog"):
                 st.error(T["consent_required"])
 else:
     def show_pdpa_consent_dialog():
+        if st.button(T["switch"], key="pdpa_language_switch", use_container_width=True):
+            switch_language()
+            st.rerun()
         st.warning(T["consent_alert"])
         st.info(T["consent_detail"])
         agreed = st.checkbox(T["consent_checkbox"], key="pdpa_checkbox")
