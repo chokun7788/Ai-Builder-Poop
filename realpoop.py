@@ -198,6 +198,13 @@ st.subheader(T["subtitle"])
 st.warning(T["warning"])
 
 
+# แสดงคำขอยินยอมเพียงครั้งเดียวต่อการเปิดเว็บ/session นี้
+# เมื่อ Refresh หรือเปิดเว็บใหม่ Streamlit จะเริ่ม session ใหม่และแสดงอีกครั้ง
+if not st.session_state.pdpa_consent:
+    show_pdpa_consent_dialog()
+    st.stop()
+
+
 def process_and_start_chat(image_source, key_suffix):
     if st.button(T["predict"], key=key_suffix, use_container_width=True):
         with st.spinner(T["predicting"]):
@@ -235,10 +242,6 @@ sec = st.selectbox(
 
 
 if sec == T["upload_mode"]:
-    if not st.session_state.pdpa_consent:
-        show_pdpa_consent_dialog()
-        st.stop()
-
     input_method = st.radio(
         T["input_method"],
         [T["camera"], T["upload_from_device"]],
